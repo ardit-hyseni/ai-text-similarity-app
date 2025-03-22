@@ -1,0 +1,27 @@
+{
+    "folders": [
+        {
+            "name": ".workspace",
+            "path": ".."
+        },
+        {
+            "name": "node-backend",
+            "path": "../packages/node-backend"
+        },
+        {
+            "name": "ai-service",
+            "path": "../packages/ai-service"
+        },
+        {
+            "name": "frontend",
+            "path": "../packages/frontend"
+        },
+    ],
+    "settings": {
+        "files.exclude": {
+            "packages/": true
+        },
+        "editor.formatOnSave": true,
+        "typescript.tsdk": ".workspace/node_modules/typescript/lib"
+    }
+}

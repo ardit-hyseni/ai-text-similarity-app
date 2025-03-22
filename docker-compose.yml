@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  monorepo:
+    build: .
+    container_name: ai-text-similarity
+    ports:
+      - "3000:3000"  # Frontend
+      - "5000:5000"  # Backend (Node.js)
+      - "8000:8000"  # AI Service (FastAPI)
+    volumes:
+      - .:/app  # Mount the monorepo into the container
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongodb:27017/text_similarity_db
+    depends_on:
+      - mongodb
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+volumes:
+  mongodb_data:
