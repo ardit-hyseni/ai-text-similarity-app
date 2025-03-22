@@ -15,7 +15,7 @@
         {
             "name": "frontend",
             "path": "../packages/frontend"
-        },
+        }
     ],
     "settings": {
         "files.exclude": {
