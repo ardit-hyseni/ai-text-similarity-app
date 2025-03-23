@@ -10,19 +10,18 @@ export class TextCompareService {
     }
 
     async compareTexts(
-        firstText: string,
-        secondText: string,
+        text1: string,
+        text2: string,
     ): Promise<number> {
         // Send embedding type to Python API
-        const response: IComparison = await axios.post('http://python-backend/compute-embeddings', {
-            firstText,
-            secondText
+        const response: IComparison = await axios.post(`${process.env.PYTHON_SERVICE_LOCALHOST_URL}/compute-embeddings`, {
+            firstText: text1,
+            secondText: text2
         });
 
-        const aiServiceResponse = response;
-
+        const { firstText, secondText, embeddingModel, score, timestamp } = response;
         // Save with embedding type
-        await this.repo.saveComparison(firstText, secondText, embeddingType, score);
+        await this.repo.saveComparison(firstText, secondText, embeddingModel, score, timestamp);
 
         return score;
     }
