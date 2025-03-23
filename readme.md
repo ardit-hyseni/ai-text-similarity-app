@@ -21,9 +21,11 @@ Follow the steps below to get all parts of the project up and running.
 ### 1. Clone the Repository
 
 Clone the repository to your local machine:
+```bash
+git clone https://github.com/ardit-hyseni/ai-text-similarity-app.git .
+```
 
-
-Then run in a Bash terminal
+Then run in a Bash terminal within the monorepo
 ```bash
 docker build -t ai-text-similarity .
 ```
