@@ -16,7 +16,7 @@ export default function Home() {
   const [secondText, setSecondText] = useState("");
   const [similarity, setSimilarity] = useState<number | null>(null);
   const [history, setHistory] = useState<ComparisonHistory[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Fetch comparison history from backend
   useEffect(() => {
@@ -109,7 +109,12 @@ export default function Home() {
               className={styles.button}
               disabled={isLoading}
             >
-              {isLoading ? "Calculating..." : "Calculate Similarity"}
+              {isLoading ?
+                <>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <span role="status">Calculating...</span>
+                </>
+                : "Calculate Similarity"}
             </button>
 
             {similarity !== null && (

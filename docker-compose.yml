@@ -11,7 +11,6 @@ services:
     volumes:
       - .:/app  # Mount the monorepo into the container
     environment:
-      - NODE_ENV=production
       - MONGO_URI=mongodb://mongodb:27017/text_similarity_db
     depends_on:
       - mongodb

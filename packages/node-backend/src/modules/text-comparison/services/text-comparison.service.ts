@@ -17,17 +17,23 @@ export class TextCompareService {
     async compareTexts(
         text1: string,
         text2: string,
-    ): Promise<number> {
-        // Send embedding type to Python API
-        const response: IComparison = await axios.post(`${process.env.PYTHON_SERVICE_LOCALHOST_URL}/compute-embeddings`, {
-            firstText: text1,
-            secondText: text2
-        });
+    ): Promise<IComparison> {
+        try {
+            // Send embedding type to Python API
+            const response: IComparison = await axios.post(`${process.env.PYTHON_SERVICE_LOCALHOST_URL}/compute-embeddings`, {
+                firstText: text1,
+                secondText: text2
+            });
 
-        const { firstText, secondText, embeddingModel, score, timestamp } = response;
-        // Save with embedding type
-        await this.repo.saveComparison(firstText, secondText, embeddingModel, score, timestamp);
+            const { firstText, secondText, embeddingModel, score, timestamp } = response;
+            // Save with embedding type
+            await this.repo.saveComparison(firstText, secondText, embeddingModel, score, timestamp);
 
-        return score;
+            return response;
+        } catch (error) {
+            console.error("Error comparing texts:", error);
+            throw error;
+        }
     }
+
 }

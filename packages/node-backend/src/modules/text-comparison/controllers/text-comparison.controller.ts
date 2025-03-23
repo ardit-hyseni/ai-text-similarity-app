@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import { Request, Response } from "express";
 import { TextCompareService } from '../services/text-comparison.service';
 
 export class TextCompareController {
