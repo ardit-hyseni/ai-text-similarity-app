@@ -10,4 +10,9 @@ export class TextCompareRepository {
     ): Promise<IComparison> {
         return ComparisonModel.create({ firstText, secondText, embeddingModel, score, timestamp });
     }
+
+    // New method to fetch comparison history
+    async getComparisonHistory(): Promise<IComparison[]> {
+        return ComparisonModel.find().sort({ timestamp: -1 }); // Sort by latest first
+    }
 }

@@ -8,6 +8,17 @@ export class TextCompareController {
         this.service = new TextCompareService();
     }
 
+    // New method to handle GET request for comparison history
+    async getComparisonHistory(req: Request, res: Response) {
+        try {
+            const history = await this.service.getComparisonHistory();
+            res.json(history);
+        } catch (error) {
+            console.error('Error fetching comparison history:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
     async postCompare(req: Request, res: Response) {
         try {
             const { firstText, secondText } = req.body;

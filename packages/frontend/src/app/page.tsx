@@ -1,95 +1,148 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
+interface ComparisonHistory {
+  id: string;
+  firstText: string;
+  secondText: string;
+  similarity: number;
+  timestamp: string;
+}
+
 export default function Home() {
+  const [firstText, setFirstText] = useState("");
+  const [secondText, setSecondText] = useState("");
+  const [similarity, setSimilarity] = useState<number | null>(null);
+  const [history, setHistory] = useState<ComparisonHistory[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch comparison history from backend
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/comparison-history");
+      if (response.ok) {
+        const data = await response.json();
+        setHistory(data);
+      } else {
+        console.error("Failed to fetch history");
+      }
+    } catch (error) {
+      console.error("Error fetching history:", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!firstText.trim() || !secondText.trim()) {
+      alert("Please enter text in both fields");
+      return;
+    }
+
+    setIsLoading(true);
+    setSimilarity(null);
+
+    try {
+      const response = await fetch("http://localhost:5000/compare", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstText, secondText }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSimilarity(data.similarity);
+
+        // Refresh history after successful comparison
+        fetchHistory();
+      } else {
+        console.error("Failed to calculate similarity");
+      }
+    } catch (error) {
+      console.error("Error calculating similarity:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      <h1 className={styles.title}>Text Similarity Comparison</h1>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+      <div className={styles.container}>
+        <div className={styles.formSection}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <label htmlFor="firstText">First Text:</label>
+              <textarea
+                id="firstText"
+                value={firstText}
+                onChange={(e) => setFirstText(e.target.value)}
+                className={styles.textArea}
+                placeholder="Enter first text..."
+                required
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label htmlFor="secondText">Second Text:</label>
+              <textarea
+                id="secondText"
+                value={secondText}
+                onChange={(e) => setSecondText(e.target.value)}
+                className={styles.textArea}
+                placeholder="Enter second text..."
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={styles.button}
+              disabled={isLoading}
+            >
+              {isLoading ? "Calculating..." : "Calculate Similarity"}
+            </button>
+
+            {similarity !== null && (
+              <div className={styles.result}>
+                <h3>Similarity Score:</h3>
+                <div className={styles.score}>{(similarity * 100).toFixed(2)}%</div>
+              </div>
+            )}
+          </form>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className={styles.historySection}>
+          <h2>Comparison History</h2>
+          {history.length === 0 ? (
+            <p>No comparison history available</p>
+          ) : (
+            <div className={styles.historyList}>
+              {history.map((item) => (
+                <div key={item.id} className={styles.historyItem}>
+                  <div className={styles.historyTexts}>
+                    <p><strong>Text 1:</strong> {item.firstText.length > 50 ? `${item.firstText.substring(0, 50)}...` : item.firstText}</p>
+                    <p><strong>Text 2:</strong> {item.secondText.length > 50 ? `${item.secondText.substring(0, 50)}...` : item.secondText}</p>
+                  </div>
+                  <div className={styles.historyScore}>
+                    <p><strong>Similarity:</strong> {(item.similarity * 100).toFixed(2)}%</p>
+                    <p className={styles.timestamp}>{new Date(item.timestamp).toLocaleString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

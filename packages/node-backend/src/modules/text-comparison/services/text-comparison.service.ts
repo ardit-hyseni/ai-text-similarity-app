@@ -9,6 +9,11 @@ export class TextCompareService {
         this.repo = new TextCompareRepository();
     }
 
+    // New method to get comparison history
+    async getComparisonHistory(): Promise<IComparison[]> {
+        return this.repo.getComparisonHistory();
+    }
+
     async compareTexts(
         text1: string,
         text2: string,
