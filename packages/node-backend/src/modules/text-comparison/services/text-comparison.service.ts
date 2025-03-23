@@ -19,21 +19,38 @@ export class TextCompareService {
         text2: string,
     ): Promise<IComparison> {
         try {
+            console.log('asdqwdwqd')
+            console.log('asdqwdwqd')
+            console.log('asdqwdwqd')
+            console.log('asdqwdwqd')
+            console.log('asdqwdwqd')
             // Send embedding type to Python API
-            const response: IComparison = await axios.post(`${process.env.PYTHON_SERVICE_LOCALHOST_URL}/compute-embeddings`, {
+            const { data }: { data: IComparison } = await axios.post(`${process.env.PYTHON_SERVICE_LOCALHOST_URL}/compute-embeddings`, {
                 firstText: text1,
                 secondText: text2
             });
-
-            const { firstText, secondText, embeddingModel, score, timestamp } = response;
+            console.log(data);
+            /*
+            {
+                "firstText": "The weather is lovely today.",
+                "secondText": "It's so sunny outside",
+                "score": 0.665,
+                "timestamp": "2025-03-23T18:41:16.731078"
+            }
+*/
+            const { firstText, secondText, embeddingModel, score, timestamp } = data;
             // Save with embedding type
             await this.repo.saveComparison(firstText, secondText, embeddingModel, score, timestamp);
 
-            return response;
+            return data;
         } catch (error) {
             console.error("Error comparing texts:", error);
             throw error;
         }
+    }
+
+    async deleteComparisonHistory(): Promise<void> {
+        await this.repo.deleteComparisonHistory();
     }
 
 }

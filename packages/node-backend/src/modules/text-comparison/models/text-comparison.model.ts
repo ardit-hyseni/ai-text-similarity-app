@@ -12,6 +12,7 @@ const comparisonSchema = new Schema<IComparison>({
     firstText: { type: String, required: true },
     secondText: { type: String, required: true },
     score: { type: Number, required: true },
+    embeddingModel: { type: String, required: false },
     timestamp: { type: Date, default: Date.now }
 });
 

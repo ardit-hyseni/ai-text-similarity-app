@@ -7,7 +7,8 @@ interface ComparisonHistory {
   id: string;
   firstText: string;
   secondText: string;
-  similarity: number;
+  score: number;
+  embeddingModel: string;
   timestamp: string;
 }
 
@@ -139,7 +140,8 @@ export default function Home() {
                     <p><strong>Text 2:</strong> {item.secondText.length > 50 ? `${item.secondText.substring(0, 50)}...` : item.secondText}</p>
                   </div>
                   <div className={styles.historyScore}>
-                    <p><strong>Similarity:</strong> {(item.similarity * 100).toFixed(2)}%</p>
+                    <p><strong>Similarity:</strong> {(item.score * 100).toFixed(2)}%</p>
+                    <p><strong>Model:</strong> {item.embeddingModel}</p>
                     <p className={styles.timestamp}>{new Date(item.timestamp).toLocaleString()}</p>
                   </div>
                 </div>

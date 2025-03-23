@@ -27,11 +27,21 @@ export class TextCompareController {
                 return res.status(400).json({ error: 'Both text fields are required' });
             }
 
-            const score = await this.service.compareTexts(firstText, secondText);
-            res.json({ similarity: score });
+            const response = await this.service.compareTexts(firstText, secondText);
+            res.json(response);
 
         } catch (error) {
             console.error('Comparison error:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async deleteComparisonHistory(req: Request, res: Response) {
+        try {
+            await this.service.deleteComparisonHistory();
+            res.json({ message: 'Comparison history deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting comparison history:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }

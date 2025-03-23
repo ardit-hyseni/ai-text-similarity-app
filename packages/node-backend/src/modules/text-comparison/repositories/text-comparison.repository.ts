@@ -15,4 +15,8 @@ export class TextCompareRepository {
     async getComparisonHistory(): Promise<IComparison[]> {
         return ComparisonModel.find().sort({ timestamp: -1 }); // Sort by latest first
     }
+
+    async deleteComparisonHistory(): Promise<void> {
+        await ComparisonModel.deleteMany({});
+    }
 }

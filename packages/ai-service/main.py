@@ -22,7 +22,7 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 def compute_similarity(text_pair: TextPair):
     # Get the current timestamp
     timestamp = datetime.now().isoformat()
-    
+    print(text_pair)
     # Encode the two texts into embeddings
     embedding1 = model.encode(text_pair.firstText)
     embedding2 = model.encode(text_pair.secondText)
@@ -39,6 +39,7 @@ def compute_similarity(text_pair: TextPair):
         "secondText": text_pair.secondText,
         # "firstEmbedding": embedding1.tolist(),  # Convert to list for cleaner JSON output
         # "secondEmbedding": embedding2.tolist(),
+        "embeddingModel": "sentence-transformers/all-MiniLM-L6-v2",
         "score": rounded_score,  # Use the rounded score
         "timestamp": timestamp  # Add the timestamp to the response
     }

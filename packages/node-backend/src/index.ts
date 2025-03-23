@@ -2,9 +2,16 @@ import express, { Request, Response, Express } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { TextCompareController } from './modules/text-comparison/controllers/text-comparison.controller'; // Import the controller
+import { connectDB } from './config/db';
 
 // For env File 
 dotenv.config();
+
+// Connect to MongoDB
+connectDB()
+    .then(() => console.log('Database connected successfully'))
+    .catch(err => console.error('Database connection error:', err));
+
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -29,6 +36,8 @@ app.post('/compare', (req: Request, res: Response) => {
 
 // GET endpoint for comparison history
 app.get('/comparison-history', (req: Request, res: Response) => textCompareController.getComparisonHistory(req, res));
+
+app.delete('/comparison-history', (req: Request, res: Response) => textCompareController.deleteComparisonHistory(req, res));
 
 // Start the server
 app.listen(port, () => {
