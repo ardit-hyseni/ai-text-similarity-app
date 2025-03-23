@@ -2,5 +2,4 @@ supervisord.log
 supervisord.pid
 node_modules
 dist
-venv/bin
-venv/lib
+venv/

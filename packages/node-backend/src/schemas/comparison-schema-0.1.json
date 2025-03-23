@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "IComparison",
+    "type": "object",
+    "properties": {
+        "firstText": {
+            "type": "string",
+            "description": "The first text to compare"
+        },
+        "secondText": {
+            "type": "string",
+            "description": "The second text to compare"
+        },
+        "scores": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/IEmbeddingScore"
+            },
+            "description": "Array of embedding scores"
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the comparison was created"
+        }
+    },
+    "required": [
+        "firstText",
+        "secondText",
+        "scores",
+        "createdAt"
+    ],
+    "definitions": {
+        "EmbeddingType": {
+            "type": "string",
+            "description": "The type of embedding used for scoring"
+        },
+        "IEmbeddingScore": {
+            "type": "object",
+            "properties": {
+                "embeddingType": {
+                    "$ref": "#/definitions/EmbeddingType"
+                },
+                "score": {
+                    "type": "number",
+                    "description": "The similarity score for the embedding"
+                }
+            },
+            "required": [
+                "embeddingType",
+                "score"
+            ]
+        }
+    }
+}

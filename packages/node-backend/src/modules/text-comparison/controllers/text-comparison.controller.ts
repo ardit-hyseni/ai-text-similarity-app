@@ -10,13 +10,13 @@ export class TextCompareController {
 
     async postCompare(req: Request, res: Response) {
         try {
-            const { text1, text2 } = req.body;
+            const { firstText, secondText } = req.body;
 
-            if (!text1 || !text2) {
+            if (!firstText || !secondText) {
                 return res.status(400).json({ error: 'Both text fields are required' });
             }
 
-            const score = await this.service.compareTexts(text1, text2);
+            const score = await this.service.compareTexts(firstText, secondText);
             res.json({ similarity: score });
 
         } catch (error) {

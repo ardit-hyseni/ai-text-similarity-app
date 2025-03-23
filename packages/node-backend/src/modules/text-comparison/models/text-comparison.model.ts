@@ -1,13 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
-export enum EmbeddingType {
-    FASTTEXT = 'fasttext',
-    OPENAI = 'openai',
-    SENTENCE_TRANSFORMERS = 'sentence-transformers'
-}
-
 interface IEmbeddingScore {
-    embeddingType: EmbeddingType;
+    embeddingType: string;
     score: number;
 }
 
@@ -25,8 +19,7 @@ const comparisonSchema = new Schema<IComparison>({
         {
             embeddingType: {
                 type: String,
-                required: true,
-                enum: Object.values(EmbeddingType),
+                required: true
             },
             score: { type: Number, required: true }
         }

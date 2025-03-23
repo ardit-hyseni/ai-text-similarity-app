@@ -2,11 +2,11 @@ import { ComparisonModel, EmbeddingType, IComparison } from "../models/text-comp
 
 export class TextCompareRepository {
     async saveComparison(
-        text1: string,
-        text2: string,
+        firstText: string,
+        secondText: string,
         embeddingType: EmbeddingType,
         score: number
     ): Promise<IComparison> {
-        return ComparisonModel.create({ text1, text2, embeddingType, score });
+        return ComparisonModel.create({ firstText, secondText, embeddingType, score });
     }
 }
