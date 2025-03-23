@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from 'react-hot-toast';
 import styles from "./page.module.css";
 
 interface ComparisonHistory {
-  id: string;
+  _id: string;
   firstText: string;
   secondText: string;
   score: number;
@@ -15,7 +16,6 @@ interface ComparisonHistory {
 export default function Home() {
   const [firstText, setFirstText] = useState("");
   const [secondText, setSecondText] = useState("");
-  const [similarity, setSimilarity] = useState<number | null>(null);
   const [history, setHistory] = useState<ComparisonHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -42,13 +42,11 @@ export default function Home() {
     e.preventDefault();
 
     if (!firstText.trim() || !secondText.trim()) {
-      alert("Please enter text in both fields");
+      toast.error('Please enter text in both fields!'); // Displays a success message
       return;
     }
 
     setIsLoading(true);
-    setSimilarity(null);
-
     try {
       const response = await fetch("http://localhost:5000/compare", {
         method: "POST",
@@ -60,9 +58,9 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        setSimilarity(data.similarity);
 
         // Refresh history after successful comparison
+        toast.success('Text compared successfully');
         fetchHistory();
       } else {
         console.error("Failed to calculate similarity");
@@ -117,13 +115,6 @@ export default function Home() {
                 </>
                 : "Calculate Similarity"}
             </button>
-
-            {similarity !== null && (
-              <div className={styles.result}>
-                <h3>Similarity Score:</h3>
-                <div className={styles.score}>{(similarity * 100).toFixed(2)}%</div>
-              </div>
-            )}
           </form>
         </div>
 
@@ -134,7 +125,7 @@ export default function Home() {
           ) : (
             <div className={styles.historyList}>
               {history.map((item) => (
-                <div key={item.id} className={styles.historyItem}>
+                <div key={item._id} className={styles.historyItem}>
                   <div className={styles.historyTexts}>
                     <p><strong>Text 1:</strong> {item.firstText.length > 50 ? `${item.firstText.substring(0, 50)}...` : item.firstText}</p>
                     <p><strong>Text 2:</strong> {item.secondText.length > 50 ? `${item.secondText.substring(0, 50)}...` : item.secondText}</p>
